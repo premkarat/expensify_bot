@@ -1,0 +1,5 @@
+class Config:
+    class TELEGRAM:
+        API_KEY = None
+        FILE_API = "https://api.telegram.org/file/bot{0}/".format(API_KEY)
+        VALID_CAPTIONS = ['phone', 'internet']
