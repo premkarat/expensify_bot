@@ -13,7 +13,32 @@ Considering the confidential nature of the data invovled in the automation, opt 
 
 Recommended Hosting Option: devVM/UBVM
 
-## How to set it up?
+## How to setup UBVM?
+
+1. Install GNOME desktop for selenium
+sudo yum groups install "GNOME Desktop"
+
+ If error, [RHEL 7 / Cent OS 7 – “fwupdate-efi” conflicts with “grub2-common”] is shown while executing 1), then run the following
+
+sudo yum upgrade grub2 firewalld
+sudo yum update --security
+
+2. Enable graphical target
+sudo systemctl enable graphical.target --force
+sudo rm '/etc/systemd/system/default.target'
+sudo ln -s '/usr/lib/systemd/system/graphical.target' '/etc/systemd/system/default.target'
+
+3. Install chrome browser
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+sudo yum localinstall google-chrome-stable_current_x86_64.rpm
+
+4. Reboot the system for GUI to kick in
+sudo reboot
+
+
+## How to setup expensify personal bot?
+
+**Python Version: 3.65 or above**
 
 1. Create a telegram bot by following this [documentation](https://core.telegram.org/bots/#3-how-do-i-create-a-bot) that will provide you an API KEY
 
@@ -30,7 +55,7 @@ Recommended Hosting Option: devVM/UBVM
 
 5. cd expensify_bot; pip install -r requirements.txt (Optionally create a virtual environment)
 
-6. Edit config.py and provide following configuration
+6. cp config.py.example to config.py and edit following configuration
 
     a. Config.TELEGRAM.API_KEY
     b. Config.TELEGRAM.CHAT_ID
@@ -43,4 +68,4 @@ Recommended Hosting Option: devVM/UBVM
     g. Config.OKAT.PASSWORD
 
 7. Start the bot, using the following command
-    python bot.py &
+    python3 bot.py &
