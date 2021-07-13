@@ -16,24 +16,32 @@ Recommended Hosting Option: devVM/UBVM
 ## How to setup UBVM?
 
 1. Install GNOME desktop for selenium
-sudo yum groups install "GNOME Desktop"
+
+`sudo yum groups install "GNOME Desktop"`
 
  If error, [RHEL 7 / Cent OS 7 – “fwupdate-efi” conflicts with “grub2-common”] is shown while executing 1), then run the following
 
-sudo yum upgrade grub2 firewalld
-sudo yum update --security
+`sudo yum upgrade grub2 firewalld`
+
+`sudo yum update --security`
 
 2. Enable graphical target
-sudo systemctl enable graphical.target --force
-sudo rm '/etc/systemd/system/default.target'
-sudo ln -s '/usr/lib/systemd/system/graphical.target' '/etc/systemd/system/default.target'
+
+`sudo systemctl enable graphical.target --force`
+
+`sudo rm '/etc/systemd/system/default.target'`
+
+`sudo ln -s '/usr/lib/systemd/system/graphical.target' '/etc/systemd/system/default.target'`
 
 3. Install chrome browser
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-sudo yum localinstall google-chrome-stable_current_x86_64.rpm
+
+`wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm`
+
+`sudo yum localinstall google-chrome-stable_current_x86_64.rpm`
 
 4. Reboot the system for GUI to kick in
-sudo reboot
+
+`sudo reboot`
 
 
 ## How to setup expensify personal bot?
@@ -44,28 +52,32 @@ sudo reboot
 
 2. Though this bot can be searched publicly, we will make this bot a personal/private assistant by following the steps below.
 
-    a. Open this URL, replace <XXX: YYYYY> with your bot API Key
-    https://api.telegram.org/bot<XXX:YYYYY>/getUpdates
-    b. Send a /start command or 'Hi' message to your bot.
-    c. After b), refresh the URL, the web page should show a JSON, from which you can grab the 'chat.id' (It's an integer)
+    >1. Open this URL, replace <XXX: YYYYY> with your bot API Key
+
+    `https://api.telegram.org/bot<XXX:YYYYY>/getUpdates`
+
+    >2. Send a `/start` command or `'Hi'` message to your bot.
+
+    >3. After b), refresh the URL, the web page should show a JSON, from which you can grab the `'chat.id'` (It's an integer)
 
 3. Generate Expensify UserID and Secret by following this [documentation](https://integrations.expensify.com/Integration-Server/doc/#authentication)
 
-4. git clone https://github.com/premkarat/expensify_bot.git
+4. `git clone https://github.com/premkarat/expensify_bot.git`
 
-5. cd expensify_bot; pip install -r requirements.txt (Optionally create a virtual environment)
+5. `cd expensify_bot; pip install -r requirements.txt` (Optionally create a virtual environment)
 
 6. cp config.py.example to config.py and edit following configuration
 
-    a. Config.TELEGRAM.API_KEY
-    b. Config.TELEGRAM.CHAT_ID
+    > 1. Config.TELEGRAM.API_KEY
+    > 2. Config.TELEGRAM.CHAT_ID
 
-    c. Config.EXPENSIFY.USERID
-    d. Config.EXPENSIFY.SECRET
+    > 3. Config.EXPENSIFY.USERID
+    > 4. Config.EXPENSIFY.SECRET
 
-    e. Config.EXPENSIFY.EMP_MAILID
-    f. Config.OKTA.USERNAME
-    g. Config.OKAT.PASSWORD
+    > 5. Config.EXPENSIFY.EMP_MAILID
+    > 6. Config.OKTA.USERNAME
+    > 7. Config.OKAT.PASSWORD
 
 7. Start the bot, using the following command
-    python3 bot.py &
+
+    `python3 bot.py &`
