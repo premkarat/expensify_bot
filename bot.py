@@ -1,25 +1,20 @@
-import logging
+import os
 import signal
 import sys
 import time
 
 from telebot.types import InlineKeyboardMarkup as IKM
 from telebot.types import InlineKeyboardButton as IKB
-import telebot
 
-from config import Config
-import util
-
-
-bot = telebot.TeleBot(Config.TELEGRAM.API_KEY)
-logger = telebot.logger
-logger.setLevel(logging.INFO)
+from config import Config, bot, logger
+import expensify
+from database import Expense
 
 
 def download_pdf_from_telegram(msg):
     file_info = bot.get_file(msg.document.file_id)
     data = bot.download_file(file_info.file_path)
-    pdf = util.tmpdir.name + '/' + file_info.file_unique_id + '.pdf'
+    pdf = os.getcwd() + '/tmp/' + file_info.file_unique_id + '.pdf'
     with open(pdf, 'wb') as f:
         f.write(data)
     return pdf
@@ -41,8 +36,7 @@ def check_response(call):
 def callback_query(call):
     if call.data == "yes":
         bot.send_message(call.message.chat.id, "Generating expensify report")
-        #TODO
-        #create_expensify_report()
+        expensify.create_expensify_report(call.message.chat.id)
     else:
         bot.send_message(call.message.chat.id, "Upload next expense")
 
@@ -59,7 +53,8 @@ def expense_handler(msg):
         bot.reply_to(msg, "Caption = Phone or Internet?\nEdit msg & provide caption")
     else:
         pdf = download_pdf_from_telegram(msg)
-        util.db.save(pdf, expense_type)
+        expense = Expense(pdf=pdf, category=expense_type)
+        expense.save()
         bot.send_message(msg.chat.id, "Done?", reply_markup=is_done_reply())
 
 
@@ -73,5 +68,12 @@ while True:
     try:
         bot.polling(none_stop=False, interval=0)
     except Exception as e:
+        expenses = Expense.get_all()
+        for e in expenses: e.delete()
+        abs_path = os.getcwd() + '/tmp/'
+        pdfs = os.listdir(abs_path)
+        for pdf in pdfs:
+            if pdf.endswith('.pdf'):
+                os.remove(abs_path + pdf)
         logger.info(e)
         time.sleep(10)
