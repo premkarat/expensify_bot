@@ -1,5 +1,89 @@
+from logging.handlers import RotatingFileHandler as RFH
+import logging
+
+import telebot
+
+
 class Config:
+    class LOGGING:
+        MAX_BYTES = 10000000
+        BACKUP_COUNT = 9
+        FILE = 'logs/bot.log'
+        FORMATTER = '%(asctime)s (%(filename)s:%(lineno)d) %(levelname)s: %(message)s'
+
     class TELEGRAM:
         API_KEY = None
         FILE_API = "https://api.telegram.org/file/bot{0}/".format(API_KEY)
         VALID_CAPTIONS = ['phone', 'internet']
+        CHAT_ID = None
+
+        class MESSAGE:
+            PDF_DOWNLOAD = "Downloading pdf..."
+            PDF_DOWNLOADED = "Downloaded pdf: OK"
+            OKTA_APPROVAL = "Use Okta App to approve login"
+            OKTA_APPROVED = 'Okta login: OK'
+            CREATE_REPORT = "Generating expensify report..."
+            REPORT_CREATED = "Successfully created expensify report: <a href='https://www.expensify.com/report?reportID={}'>{}</a>"
+            UPLOAD_EXPENSE = "Upload next expense"
+            SPECIFY_CAPTION = "Caption = Phone or Internet?\nEdit msg & provide caption"
+            DUPLICATE_EXPENSE = 'Duplicate expense detected!!'
+            DONE = "Done?"
+
+    class EXPENSIFY:
+        USERID = None
+        SECRET = None
+        EMP_MAILID = None
+        API_URL = "https://integrations.expensify.com/Integration-Server/ExpensifyIntegrations"
+        POLICYID = "AC460806BD8B0AD6"
+        CURRENCY = "INR"
+        URL = "https://www.expensify.com/"
+        REPORT_URL = "'https://www.expensify.com/report?reportID={}'"
+        REPORT_NAME = "Expense-"
+        REPORT_FMT = "%y%m%d%H%M"
+        MERCHANTS = {
+            'Airtel': 'Airtel',
+            'MyVi': 'Vodafone'
+        }
+
+        class ERR:
+            CREATE = 'Failed to create expensify report'
+            LOGIN = 'Failed to login to expensify'
+            REPORT = 'Failed to open expensify report: {}'
+            RECEIPT = 'Failed to upload expensify receipts: {}'
+
+        class XPATH:
+            EXPENSES = "//table[contains(@class,'table')]//span[contains(@class,'addReceiptIcon')]"
+            ATTACH = "//input[contains(@name, 'expense_attach') and contains(@type, 'file')]"
+            DELETE = "//td[contains(@class, 'delete-cell')]"
+            LOAD_IMAGE = 'loadingImage'
+
+    class OKTA:
+        USERNAME = None
+        PASSWORD = None
+
+    class PATTERN:
+        DATE_STR_FMT = "%Y-%m-%d"
+
+        class AIRTEL:
+            DATE = r"Bill date (.*)"
+            TOTAL = r".*month.*charges \+ (\d{0,1},*\d{1,}\.\d{1,})"
+            # Airel bill date fmts can vary between bills,
+            # hence a list of date & total format patterns
+            DT_FMTS = ["%d-%b-%Y", "%d %b %Y"]
+
+        class VODAFONE:
+            TOTAL = r"Amount Payable Rs (.*)"
+            DATE = r"Bill Cycle Date : (.*)"
+            DT_FMT = "%d.%m.%y"
+
+
+bot = telebot.TeleBot(Config.TELEGRAM.API_KEY)
+logger = telebot.logger
+file_handler = RFH(Config.LOGGING.FILE,
+                   maxBytes=Config.LOGGING.MAX_BYTES,
+                   backupCount=Config.LOGGING.BACKUP_COUNT)
+formatter = logging.Formatter(Config.LOGGING.FORMATTER)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger.removeHandler(telebot.console_output_handler)
+logger.setLevel(logging.INFO)

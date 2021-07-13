@@ -36,11 +36,23 @@ class Expense(Base):
     def get_all(cls, *order_by_args):
         if order_by_args:
             return db.query(cls,
-            ).order_by(*order_by_args
-            ).all()
+                ).order_by(*order_by_args
+                ).all()
         else:
             return db.query(cls
-            ).all()
+                ).all()
+
+    @classmethod
+    def get_all_receipts(cls):
+        objs = db.query(cls.pdf
+                    ).order_by(cls.category, cls.date
+                    ).all()
+        receipts = [receipt for receipt, *_ in objs]
+        return receipts
+
+    @staticmethod
+    def rollback():
+        db.rollback()
 
     @staticmethod
     def save_all(objs):
