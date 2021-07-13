@@ -58,7 +58,7 @@ Recommended Hosting Option: devVM/UBVM
 
     >2. Send a `/start` command or `'Hi'` message to your bot.
 
-    >3. After b), refresh the URL, the web page should show a JSON, from which you can grab the `'chat.id'` (It's an integer)
+    >3. After ii), refresh the URL, the web page should show a JSON, from which you can grab the `'chat.id'` (It's an integer)
 
 3. Generate Expensify UserID and Secret by following this [documentation](https://integrations.expensify.com/Integration-Server/doc/#authentication)
 
@@ -73,8 +73,8 @@ Recommended Hosting Option: devVM/UBVM
 
     > 3. Config.EXPENSIFY.USERID
     > 4. Config.EXPENSIFY.SECRET
-
     > 5. Config.EXPENSIFY.EMP_MAILID
+
     > 6. Config.OKTA.USERNAME
     > 7. Config.OKAT.PASSWORD
 
